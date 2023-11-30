@@ -31,8 +31,14 @@ const categories = ['fruit', 'vegetable', 'dairy'];
 // Product Index - shows all products
 // *******************************************
 app.get('/products', async (req, res) => {
-    const products = await Product.find({});
-    res.render("products/index.ejs", {products})
+    const { category } = req.query;
+    if (category) {
+        const products = await Product.find(req.query);
+        res.render("products/index.ejs", {products, category})
+    } else {
+        const products = await Product.find(req.query);
+        res.render("products/index.ejs", {products, category: 'All'});
+    }
 });
 
 // *******************************************
