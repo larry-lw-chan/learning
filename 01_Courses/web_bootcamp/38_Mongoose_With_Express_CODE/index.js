@@ -24,14 +24,22 @@ app.use(methodOverride('_method'));                // To 'fake' put/patch/delete
 app.set('views', path.join(__dirname, 'views'));   // EJS and Views folder setup:
 app.set('view engine', 'ejs');                     // EJS and Views folder setup:
 
-// Express Routes
+// Hardcore Categories
+const categories = ['fruit', 'vegetable', 'dairy'];
+
+// *******************************************
+// Product Index - shows all products
+// *******************************************
 app.get('/products', async (req, res) => {
     const products = await Product.find({});
     res.render("products/index.ejs", {products})
 });
 
+// *******************************************
+// Product New - Form to create new product
+// *******************************************
 app.get('/products/new', async (req, res) => {
-    res.render("products/new.ejs");
+    res.render("products/new.ejs", {categories});
 });
 
 app.post('/products', async (req, res) => {
@@ -40,16 +48,42 @@ app.post('/products', async (req, res) => {
     res.redirect('/products');
 });
 
+// *******************************************
+// Product Update - Update product
+// *******************************************
+app.get('/products/:id/edit', async (req, res) => {
+    let {id} = req.params;
+    const product = await Product.findById(id);
+    res.render('products/edit.ejs', { product, categories });
+});
+
+app.put('/products/:id', async (req,res) => {
+    let {id} = req.params;
+    console.log(req.body);
+    let product = await Product.findByIdAndUpdate(id, req.body, { runValidators: true, new: true });
+    res.redirect(`/products/${product._id}`);
+});
+
+// *******************************************
+// Product Delete - Delete a product
+// *******************************************
+app.delete('/products/:id', async (req, res) => {
+    let {id} = req.params;
+    let product = await Product.findByIdAndDelete(id);
+    res.redirect('/products/');
+});
+
+// *******************************************
+// Product Show - Product Detail Page
+// *******************************************
 app.get('/products/:id', async (req, res) => {
     let {id} = req.params;
+    console.log(id);
     const product = await Product.findById(id);
     res.render("products/detail.ejs", {product});
 });
 
-app.get('*', (req, res) => {
-    res.send("Works");
-});
-
+// Run Express Server
 app.listen(3000,(req, res) => {
     console.log("Server is running");
 });
