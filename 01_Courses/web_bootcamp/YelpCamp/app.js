@@ -51,6 +51,19 @@ app.get('/', (req, res) => {
     res.render('home');
 });
 
+// Error Testing
+app.get('/error', (req, res) => {
+    try {
+        chicken.fly();
+    } 
+    catch (err) {
+        console.log(err);
+    }
+    finally {
+        res.send("Error Caught");
+    }
+});
+
 // Index Page
 app.get('/campgrounds', async (req, res) => {
     const campgrounds = await Campground.find({});
