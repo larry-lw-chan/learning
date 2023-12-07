@@ -7,6 +7,7 @@ const path = require('path')
 const methodOverride = require('method-override');
 const morgan = require('morgan');
 const ejsMate = require('ejs-mate');
+const AppError = require('./AppError.js');
 
 // Express Settings
 app.engine('ejs', ejsMate);
@@ -51,49 +52,52 @@ app.get('/', (req, res) => {
     res.render('home');
 });
 
-// Error Testing
-app.get('/error', (req, res) => {
-    try {
-        chicken.fly();
-    } 
-    catch (err) {
-        console.log(err);
-    }
-    finally {
-        res.send("Error Caught");
-    }
-});
-
 // Index Page
-app.get('/campgrounds', async (req, res) => {
+app.get('/campgrounds', wrapAsync(async (req, res, next) => {
     const campgrounds = await Campground.find({});
-    res.render('./campgrounds/index', {campgrounds});
-});
+    if (campgrounds) {
+        res.render('./campgrounds/index', {campgrounds});
+    } else {
+        print(campgrounds + "weird");
+        throw new AppError('Page unable to load', 404);
+    }
+}));
 
 // New Page
 app.get('/campgrounds/new', (req, res) => {
     res.render('./campgrounds/new');
 });
 
-app.post('/campgrounds/new', async (req, res) => {
+app.post('/campgrounds/new', wrapAsync(async (req, res, next) => {
     console.log('works')
-    const {title, location} = req.body.campground;
     const campground = new Campground(req.body.campground);
     await campground.save();
-    res.redirect('/campgrounds');
-});
+    if (campground) {
+        res.redirect('/campgrounds');
+    } else {
+        throw new AppError('Campground did not save', 404);
+    }
+}));
 
 // Edit Pages
-app.get('/campgrounds/:id/edit', async (req, res) => {
+app.get('/campgrounds/:id/edit', wrapAsync(async (req, res, next) => {
     const campground = await Campground.findById(req.params.id);
-    res.render('./campgrounds/edit', {campground});
-});
+    if (campground) {
+        res.render('./campgrounds/edit', {campground});
+    } else {
+        throw new AppError('Campground edit not working', 404);
+    }
+}));
 
-app.put('/campgrounds/:id/', async (req, res) => {
+app.put('/campgrounds/:id/', wrapAsync(async (req, res, next) => {
     const {title, location} = req.body.campground;
-    await Campground.findByIdAndUpdate(req.params.id, req.body.campground);
-    res.redirect(`/campgrounds/${req.params.id}`);
-});
+    const campground = await Campground.findByIdAndUpdate(req.params.id, req.body.campground);    
+    if (!campground) {
+        throw new AppError('Campground update error', 404);
+    } else {
+        res.redirect(`/campgrounds/${req.params.id}`);
+    }
+}));
 
 // Delete Page
 app.delete('/campgrounds/:id', async (req, res) => {
@@ -102,15 +106,81 @@ app.delete('/campgrounds/:id', async (req, res) => {
 });
 
 // Detail Page
-app.get('/campgrounds/:id', async (req, res) => {
+app.get('/campgrounds/:id', wrapAsync(async (req, res, next) => {
     const {id} = req.params;
-    const campground = await Campground.findById(id);
-    res.render('./campgrounds/show', {campground})
+    const campground = await Campground.findById(id);    
+    if (campground) {
+        res.render('./campgrounds/show', {campground});        
+    } else {
+        throw new AppError('Campground not found', 404);
+    }
+}));
+
+
+// ********************************************************
+// * Error Experiments
+// ********************************************************
+function wrapAsync(fn) {
+    return function(req, res, next) {
+        fn(req, res, next).catch(e => next(e));
+    }
+}
+
+app.get('/error', (req, res) => {
+    chicken.fly();
+    // throw new Error('BROKEN'); 
+});
+
+// Password Check Page
+function verifyPassword(req, res, next) {
+    try {
+        const { password } = req.query;
+        if (password === 'chickennugget') {
+            next();
+        }
+        else {
+            // res.send("Password Needed!");
+            throw new AppError('Password required!', 401);
+        }
+    } catch(e) {
+        next(e);
+    }
+}
+
+app.get('/admin', (res, req) => {
+    throw new AppError('You are not admin', 403);
+});
+
+app.get('/secret', verifyPassword, (req, res) => {
+    res.send("Correct password entered.  Someimtes I wear headphone in puboic");
 });
 
 // Error Path (place last in file...)
 app.use((req, res) => {
     res.status(404).send('Error 404.  Page not found.');
+});
+
+// Custom Error Middleware Handler
+const handleValidationErr = err => {
+    console.log(err);
+    return err;
+}
+
+app.use((err, req, res, next) => {
+    console.log(err.name);  // print mongoose errors
+    if (err.name === 'ValidationError') {
+        err = handleValidationErr(err);
+    }
+    next(err);
+});
+
+app.use((err, req, res, next) => {
+    // console.log("######################################");
+    // console.log("################Error#################");
+    // console.log("######################################");
+    // console.log(err);
+    const { status = 500, message = 'Something went wrong'} = err;
+    res.status(status).send(message);
 });
 
 // Turn on Server

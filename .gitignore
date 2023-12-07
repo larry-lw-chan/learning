@@ -131,3 +131,8 @@ dist
 
 # Mac Specific
 .DS_Store
+
+# Ignore Python virtualenv
+python3.11
+bin
+pyvenv.cfg
