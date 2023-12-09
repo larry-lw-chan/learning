@@ -7,7 +7,10 @@ const path = require('path')
 const methodOverride = require('method-override');
 const morgan = require('morgan');
 const ejsMate = require('ejs-mate');
+const catchAsync = require('./utils/catchAsync');
+const ExpressError = require('./utils/ExpressError');
 const AppError = require('./AppError.js');
+const validateCampground = require('./schemas');
 
 // Express Settings
 app.engine('ejs', ejsMate);
@@ -18,6 +21,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({extended: true}));
 app.use(methodOverride('_method'));
 app.use(morgan('tiny'));
+
 // app.use((req, res, next) => {
 //     console.log("This is my first middleware");
 //     next();
@@ -53,7 +57,7 @@ app.get('/', (req, res) => {
 });
 
 // Index Page
-app.get('/campgrounds', wrapAsync(async (req, res, next) => {
+app.get('/campgrounds', catchAsync(async (req, res, next) => {
     const campgrounds = await Campground.find({});
     if (campgrounds) {
         res.render('./campgrounds/index', {campgrounds});
@@ -68,19 +72,14 @@ app.get('/campgrounds/new', (req, res) => {
     res.render('./campgrounds/new');
 });
 
-app.post('/campgrounds/new', wrapAsync(async (req, res, next) => {
-    console.log('works')
+app.post('/campgrounds/new', validateCampground, catchAsync(async (req, res, next) => {
     const campground = new Campground(req.body.campground);
     await campground.save();
-    if (campground) {
-        res.redirect('/campgrounds');
-    } else {
-        throw new AppError('Campground did not save', 404);
-    }
+    res.redirect('/campgrounds');
 }));
 
 // Edit Pages
-app.get('/campgrounds/:id/edit', wrapAsync(async (req, res, next) => {
+app.get('/campgrounds/:id/edit', catchAsync(async (req, res, next) => {
     const campground = await Campground.findById(req.params.id);
     if (campground) {
         res.render('./campgrounds/edit', {campground});
@@ -89,7 +88,7 @@ app.get('/campgrounds/:id/edit', wrapAsync(async (req, res, next) => {
     }
 }));
 
-app.put('/campgrounds/:id/', wrapAsync(async (req, res, next) => {
+app.put('/campgrounds/:id/', validateCampground, catchAsync(async (req, res, next) => {
     const {title, location} = req.body.campground;
     const campground = await Campground.findByIdAndUpdate(req.params.id, req.body.campground);    
     if (!campground) {
@@ -106,7 +105,7 @@ app.delete('/campgrounds/:id', async (req, res) => {
 });
 
 // Detail Page
-app.get('/campgrounds/:id', wrapAsync(async (req, res, next) => {
+app.get('/campgrounds/:id', catchAsync(async (req, res, next) => {
     const {id} = req.params;
     const campground = await Campground.findById(id);    
     if (campground) {
@@ -120,12 +119,6 @@ app.get('/campgrounds/:id', wrapAsync(async (req, res, next) => {
 // ********************************************************
 // * Error Experiments
 // ********************************************************
-function wrapAsync(fn) {
-    return function(req, res, next) {
-        fn(req, res, next).catch(e => next(e));
-    }
-}
-
 app.get('/error', (req, res) => {
     chicken.fly();
     // throw new Error('BROKEN'); 
@@ -156,6 +149,11 @@ app.get('/secret', verifyPassword, (req, res) => {
 });
 
 // Error Path (place last in file...)
+app.all('*', (req, res, next) => {
+    next(new ExpressError("Sorry, this is an bad error", 404));
+    // res.send("404!!!!");
+});
+
 app.use((req, res) => {
     res.status(404).send('Error 404.  Page not found.');
 });
@@ -179,8 +177,11 @@ app.use((err, req, res, next) => {
     // console.log("################Error#################");
     // console.log("######################################");
     // console.log(err);
-    const { status = 500, message = 'Something went wrong'} = err;
-    res.status(status).send(message);
+    // res.send("Something went wrong");
+    console.log(err)
+    const { statusCode = 500 } = err;
+    if (!err.message) err.message = 'Something went wrong';
+    res.status(statusCode).render('error', { statusCode, err });
 });
 
 // Turn on Server

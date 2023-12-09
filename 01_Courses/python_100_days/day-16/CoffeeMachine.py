@@ -49,27 +49,26 @@ class CoffeeMachine:
             self.coffee -= resource_needs['coffee']
             self.money += resource_needs['price']
             return True
+        
+    def getChange(self, money_inserted, resource_needs):
+        change = money_inserted - resource_needs['price']
+        print(f"Here is ${round(change, 2)} in change.")
             
-    def getDrink():
-        pass
+    def getCoffee(self, choice):
+        print(f"Here is your {choice}. Enjoy!")
 
     def main(self):
         while True:
             choice = input("What would you like? (espresso/latte/cappucino): ")
             if choice == 'report':
                 self.print_report()
-                continue
             else:
                 resource_needs = self.MENU[choice]
-                # End Process if not enough resources
-                if self.check_resource(resource_needs) == False:
-                    continue
-                # End Process if not enough resources
-                money_inserted = self.process_coin()
-                if self.check_transaction(money_inserted, resource_needs) == True:
-                    change = money_inserted - resource_needs['price']
-                    print(f"Here is ${round(change, 2)} in change.")
-                    print(f"Here is your {choice}. Enjoy!")
+                if self.check_resource(resource_needs) == True:
+                    money_inserted = self.process_coin()
+                    if self.check_transaction(money_inserted, resource_needs) == True:
+                        self.getChange(money_inserted, resource_needs)       
+                        self.getCoffee(choice)
 
 # Initialize Class
 coffee_machine = CoffeeMachine()
