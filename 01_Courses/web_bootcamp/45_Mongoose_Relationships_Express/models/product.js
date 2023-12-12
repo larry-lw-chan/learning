@@ -32,13 +32,10 @@ productSchema.post('findOneAndDelete', async function (product) {
     console.log("Product ID is ....");    
     console.log(product._id);    
 
-    const res = Farm.findOneAndUpdate(
+    const res = await Farm.findOneAndUpdate(
          { _id: product.farm }, 
          { $pull: { "products" : product._id } },
-         { new: true },
-         function(err, data) {
-            console.log(err, data);
-         }
+         { new: true }
     );
     console.log(res);
 })
