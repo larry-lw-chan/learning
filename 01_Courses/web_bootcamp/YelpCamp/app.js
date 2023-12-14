@@ -10,7 +10,6 @@ const ejsMate = require('ejs-mate');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
 const AppError = require('./AppError.js');
-const validateCampground = require('./schemas');
 
 // Express Settings
 app.engine('ejs', ejsMate);
@@ -48,6 +47,36 @@ db.once("open", () => console.log("Database connected"));
 
 // Load Models
 const Campground = require('./models/campground');
+const Review = require('./models/review');
+
+
+// ********************************************************
+// * Express Validations
+// ********************************************************
+const { campgroundSchema, reviewSchema } = require('./schemas');
+
+const validateCampground = (req, res, next) => {
+    const { error } = campgroundSchema.validate(req.body);    
+    console.log(error);
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',');
+        throw new ExpressError(msg, 400);
+    } else {
+        next();
+    }
+}
+
+const validateReview = (req, res, next) => {
+    const { error } = reviewSchema.validate(req.body);    
+    console.log(error);
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',');
+        throw new ExpressError(msg, 400);
+    } else {
+        next();
+    }
+}
+
 
 // ********************************************************
 // * Express Routes
@@ -59,12 +88,13 @@ app.get('/', (req, res) => {
 // Index Page
 app.get('/campgrounds', catchAsync(async (req, res, next) => {
     const campgrounds = await Campground.find({});
-    if (campgrounds) {
-        res.render('./campgrounds/index', {campgrounds});
-    } else {
-        print(campgrounds + "weird");
-        throw new AppError('Page unable to load', 404);
-    }
+    res.render('./campgrounds/index', { campgrounds });
+    // if (campgrounds) {
+    //     res.render('./campgrounds/index', {campgrounds});
+    // } else {
+    //     print(campgrounds + "weird");
+    //     throw new AppError('Page unable to load', 404);
+    // }
 }));
 
 // New Page
@@ -104,10 +134,28 @@ app.delete('/campgrounds/:id', async (req, res) => {
     res.redirect('/campgrounds');
 });
 
+// Add Review Pages Here
+app.post('/campgrounds/:id/reviews', validateReview, catchAsync(async (req, res) => {
+    const campground = await Campground.findById(req.params.id);
+    const review = new Review(req.body.review);
+    campground.reviews.push(review)
+    await review.save();
+    await campground.save();
+    res.redirect(`/campgrounds/${campground._id}`);
+}));
+
+app.delete('/campgrounds/:id/reviews/:reviewId', catchAsync(async (req, res) => {
+    const { id, reviewId } = req.params;
+    await Campground.findByIdAndUpdate(id, { $pull: { "reviews" : reviewId }});
+    await Review.findById(reviewId);
+    res.redirect(`/campgrounds/${id}`);
+}));
+
 // Detail Page
 app.get('/campgrounds/:id', catchAsync(async (req, res, next) => {
     const {id} = req.params;
-    const campground = await Campground.findById(id);    
+    const campground = await Campground.findById(id).populate('reviews');    
+    console.log(campground);
     if (campground) {
         res.render('./campgrounds/show', {campground});        
     } else {
