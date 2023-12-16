@@ -1,11 +1,14 @@
 const express = require('express');
 const app = express();
 
+let secret_key = "s0@&o%#h2ix7j7byqa+x*m6rvphm7!n4=5k7s%@sj+#+*lct41";
+
 const cookieParser = require('cookie-parser');
-app.use(cookieParser('thisismysecret'));
+app.use(cookieParser(secret_key));
 
 app.get('/greet', (req, res) => {
     const { name = 'No-name' } = req.cookies;
+    console.log(req.cookies);
     res.send(`Hey there, ${name}`)
 })
 
