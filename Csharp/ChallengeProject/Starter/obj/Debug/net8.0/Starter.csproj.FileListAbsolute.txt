@@ -1,0 +1,15 @@
+/Users/larrychan/Development/learning/Csharp/ChallengeProject/Starter/bin/Debug/net8.0/Starter
+/Users/larrychan/Development/learning/Csharp/ChallengeProject/Starter/bin/Debug/net8.0/Starter.deps.json
+/Users/larrychan/Development/learning/Csharp/ChallengeProject/Starter/bin/Debug/net8.0/Starter.runtimeconfig.json
+/Users/larrychan/Development/learning/Csharp/ChallengeProject/Starter/bin/Debug/net8.0/Starter.dll
+/Users/larrychan/Development/learning/Csharp/ChallengeProject/Starter/bin/Debug/net8.0/Starter.pdb
+/Users/larrychan/Development/learning/Csharp/ChallengeProject/Starter/obj/Debug/net8.0/Starter.GeneratedMSBuildEditorConfig.editorconfig
+/Users/larrychan/Development/learning/Csharp/ChallengeProject/Starter/obj/Debug/net8.0/Starter.AssemblyInfoInputs.cache
+/Users/larrychan/Development/learning/Csharp/ChallengeProject/Starter/obj/Debug/net8.0/Starter.AssemblyInfo.cs
+/Users/larrychan/Development/learning/Csharp/ChallengeProject/Starter/obj/Debug/net8.0/Starter.csproj.CoreCompileInputs.cache
+/Users/larrychan/Development/learning/Csharp/ChallengeProject/Starter/obj/Debug/net8.0/Starter.sourcelink.json
+/Users/larrychan/Development/learning/Csharp/ChallengeProject/Starter/obj/Debug/net8.0/Starter.dll
+/Users/larrychan/Development/learning/Csharp/ChallengeProject/Starter/obj/Debug/net8.0/refint/Starter.dll
+/Users/larrychan/Development/learning/Csharp/ChallengeProject/Starter/obj/Debug/net8.0/Starter.pdb
+/Users/larrychan/Development/learning/Csharp/ChallengeProject/Starter/obj/Debug/net8.0/Starter.genruntimeconfig.cache
+/Users/larrychan/Development/learning/Csharp/ChallengeProject/Starter/obj/Debug/net8.0/ref/Starter.dll
