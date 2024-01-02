@@ -142,3 +142,50 @@ function getBooks() {
 function getBook(id) {
   return data.find((d) => d.id === id);
 }
+
+// Array and Object Destructuring
+// const { title, author, pages, genres } = getBook(1);
+// const [primaryGenre, secondaryGenre] = genres;
+// console.log(title, author, pages);
+// console.log(primaryGenre, secondaryGenre);
+
+// // Rest and Spread Operators
+// const { genres } = getBook(1);
+// const [primaryGenre, secondaryGenre, ...others] = genres; // rest operator
+// // console.log(others);
+
+// const newGenres = ["headache", "sickness", "stuffed", ...genres]; // array spread operator
+// // console.log(newGenres);
+
+// const book = getBook(1);
+// const updatedBook = {
+//   ...book,
+//   // add new properties
+//   moviePublicationDate: "2001-12-19",
+//   // override existing properties
+//   pages: 1210,
+// }; // obj spread operator
+// console.log(updatedBook);
+
+// Template Literals
+// let book = getBook(1);
+// let summary = `The book ${book.title} was written by ${book.author} in ${book.publicationDate}.`;
+
+// Tenery Operator
+// let book = getBook(1);
+// let bookType = book.pages > 1000 ? "long book" : "short book";
+// console.log(bookType);
+
+// Arrow Functions
+// (str) => {
+//   str.split("-")[0];
+// };
+
+// Short Circuit Evaluation
+// console.log(true && "hello"); // hello
+// console.log(false && "hello"); // false
+
+// console.log(true || "hello"); // hello
+// console.log(false || "hello"); // false
+
+// Optional Chaining
