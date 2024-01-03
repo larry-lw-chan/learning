@@ -1,5 +1,6 @@
 import React from "react";
 import "./index.css";
+import pizzaData from "./data";
 
 function App() {
   return (
@@ -20,28 +21,40 @@ function Header() {
 }
 
 function Menu() {
+  const pizzas = pizzaData;
+  // const pizzas = [];
+  const numPizzas = pizzas.length;
+
   return (
     <main className="menu">
       <h2>Our Menu</h2>
-      <Pizza
-        name="Pizza Spinaci"
-        ingredient="Tomato, mozarella, spinach, and ricotta cheese"
-        photo="pizzas/spinaci.jpg"
-        price={10.0}
-      />
+
+      {numPizzas > 0 ? (
+        <React.Fragment>
+          <p>This is true italian cuisine at it's finiest</p>
+          <ul className="pizzas">
+            {pizzas.map((pizza) => (
+              <Pizza pizzaObj={pizza} key={pizza.name} />
+            ))}
+          </ul>
+        </React.Fragment>
+      ) : (
+        <p>We're still working on our menu. Please come back later :</p>
+      )}
     </main>
   );
 }
 
-function Pizza(props) {
-  const { name, ingredient, photo, price } = props;
+function Pizza({ pizzaObj }) {
+  // if (pizzaObj.soldOut === true) return null;
+
   return (
-    <div>
-      <img src={photo} alt="spinaci" />
-      <h3>{name}</h3>
-      <p>{ingredient}</p>
-      <span>{price}</span>
-    </div>
+    <li className={`pizza ${pizzaObj.soldOut && "sold-out"}`}>
+      <img src={pizzaObj.photoName} alt="spinaci" />
+      <h3>{pizzaObj.name}</h3>
+      <p>{pizzaObj.ingredients}</p>
+      <span>{pizzaObj.soldOut ? "sold out" : pizzaObj.price}</span>
+    </li>
   );
 }
 
@@ -50,15 +63,35 @@ function Footer() {
   const openHours = 12;
   const closeHours = 22;
   const isOpen = hour >= openHours && hour <= closeHours;
-  const message = isOpen
-    ? "Sorry, we're currently closed"
-    : "We're open! Come on in!";
 
   return (
     <footer className="footer">
-      {new Date().toLocaleTimeString()} {message}
+      {isOpen ? (
+        <Order closeHours={closeHours} />
+      ) : (
+        <Closed openHours={openHours} closeHours={closeHours} />
+      )}
     </footer>
   );
 }
 
-export { App, Pizza };
+function Order({ closeHours }) {
+  return (
+    <div className="order">
+      <p>
+        We're open until {closeHours}:00. Please come visit us or order online.
+      </p>
+      <button className="btn">Order</button>
+    </div>
+  );
+}
+
+function Closed({ openHours, closeHours }) {
+  return (
+    <p>
+      We're happy to welcome you between {openHours}:00 and {closeHours}:00
+    </p>
+  );
+}
+
+export default App;

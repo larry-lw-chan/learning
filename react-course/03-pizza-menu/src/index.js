@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { App, Pizza } from "./App";
+import App from "./App";
 
 // React Version 18
 let root = ReactDOM.createRoot(document.getElementById("root"));

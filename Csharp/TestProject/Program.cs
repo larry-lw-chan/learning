@@ -1,155 +1,171 @@
-﻿// string message = "Find what is (inside the parentheses)";
+﻿// int[] a = [1,2,3,4,5];
+// Console.WriteLine("Contents of Arrays");
+// printArray();
 
-// int openingPosition = message.IndexOf('(');
-// int closingPosition = message.IndexOf(')');
-
-// openingPosition += 1;
-
-// int length = closingPosition - openingPosition;
-// Console.WriteLine(message.Substring(openingPosition, length));
-
-// string message = "What is the value <span>between the tags</span>?";
-
-// int openingPosition = message.IndexOf("<span>");
-// int closingPosition = message.IndexOf("</span>");
-
-// openingPosition += 6;
-// int length = closingPosition - openingPosition;
-// Console.WriteLine(message.Substring(openingPosition, length));
-
-// string message = "What is the value <span>between the tags</span>?";
-
-// const string openSpan = "<span>";
-// const string closeSpan = "</span>";
-
-// int openingPosition = message.IndexOf(openSpan);
-// int closingPosition = message.IndexOf(closeSpan);
-
-// openingPosition += openSpan.Length;
-// int length = closingPosition - openingPosition;
-// Console.WriteLine(message.Substring(openingPosition, length));
-
-// string message = "(What if) I am (only interested) in the last (set of parentheses)?";
-// int openingPosition = message.LastIndexOf('(');
-// openingPosition += 1;
-// int closingPosition = message.LastIndexOf(')');
-// int length = closingPosition - openingPosition;
-// Console.WriteLine(message.Substring(openingPosition, length));
-
-// string message = "(What if) there are (more than) one (set of parentheses)?";
-// while (true)
-// {
-//     int openingPosition = message.IndexOf('(');
-//     if (openingPosition == -1) break;
-
-//     openingPosition += 1;
-//     int closingPosition = message.IndexOf(')');
-//     int length = closingPosition - openingPosition;
-//     Console.WriteLine(message.Substring(openingPosition, length));
-
-//     // Note the overload of the Substring to return only the remaining 
-//     // unprocessed message:
-//     message = message.Substring(closingPosition + 1);
+// void printArray() {
+//     foreach (int i in a) {
+//         Console.Write($"{i} ");
+//     }
+//     Console.WriteLine();
 // }
 
-// string message = "Help (find) the {opening symbols}";
-// Console.WriteLine($"Searching THIS Message: {message}");
-// char[] openSymbols = { '[', '{', '(' };
-// int startPosition = 6;
-// int openingPosition = message.IndexOfAny(openSymbols);
-// Console.WriteLine($"Found WITHOUT using startPosition: {message.Substring(openingPosition)}");
-
-// openingPosition = message.IndexOfAny(openSymbols, startPosition);
-// Console.WriteLine($"Found WITH using startPosition {startPosition}: {message.Substring(openingPosition)}");
-
-// string message = "(What if) I have [different symbols] but every {open symbol} needs a [matching closing symbol]?";
-
-// // The IndexOfAny() helper method requires a char array of characters. 
-// // You want to look for:
-
-// char[] openSymbols = { '[', '{', '(' };
-
-// // You'll use a slightly different technique for iterating through 
-// // the characters in the string. This time, use the closing 
-// // position of the previous iteration as the starting index for the 
-// //next open symbol. So, you need to initialize the closingPosition 
-// // variable to zero:
-
-// int closingPosition = 0;
-
-// while (true)
-// {
-//     int openingPosition = message.IndexOfAny(openSymbols, closingPosition);
-
-//     if (openingPosition == -1) break;
-
-//     string currentSymbol = message.Substring(openingPosition, 1);
-
-//     // Now  find the matching closing symbol
-//     char matchingSymbol = ' ';
-
-//     switch (currentSymbol)
+// void DisplayRandomNumbers() {
+//     Random random = new Random();
+//     for (int i = 0; i < 5; i++) 
 //     {
-//         case "[":
-//             matchingSymbol = ']';
-//             break;
-//         case "{":
-//             matchingSymbol = '}';
-//             break;
-//         case "(":
-//             matchingSymbol = ')';
-//             break;
+//         Console.Write($"{random.Next(1, 100)} ");
+//     }    
+//     Console.WriteLine();    
+// }
+
+// Console.Write("Generating random numbers: ");
+// DisplayRandomNumbers();
+
+// using System;
+
+// int[] times = {800, 1200, 1600, 2000};
+// int diff = 0;
+
+// Console.WriteLine("Enter current GMT");
+// int currentGMT = Convert.ToInt32(Console.ReadLine());
+
+// Console.WriteLine("Current Medicine Schedule:");
+// DisplayTimes();
+
+// Console.WriteLine("Enter new GMT");
+// int newGMT = Convert.ToInt32(Console.ReadLine());
+
+// if (Math.Abs(newGMT) > 12 || Math.Abs(currentGMT) > 12)
+// {
+//     Console.WriteLine("Invalid GMT");
+// }
+// else if (newGMT <= 0 && currentGMT <= 0 || newGMT >= 0 && currentGMT >= 0) 
+// {
+//     /* Adjust the times by adding the difference, keeping the value within 24 hours */
+//     diff = 100 * (Math.Abs(newGMT) - Math.Abs(currentGMT));
+//     AdjustTimes();
+// } 
+// else 
+// {
+//     /* Adjust the times by adding the difference, keeping the value within 24 hours */
+//     diff = 100 * (Math.Abs(newGMT) + Math.Abs(currentGMT));
+//     AdjustTimes();
+// }
+
+// /* Format and display medicine times */
+// Console.WriteLine("New Medicine Schedule:");
+// DisplayTimes();
+
+
+// void DisplayTimes() 
+// {
+//     /* Format and display medicine times */
+//     foreach (int val in times)
+//     {
+//         string time = val.ToString();
+//         int len = time.Length;
+
+//         if (len >= 3)
+//         {
+//             time = time.Insert(len - 2, ":");
+//         }
+//         else if (len == 2)
+//         {
+//             time = time.Insert(0, "0:");
+//         }
+//         else
+//         {
+//             time = time.Insert(0, "0:0");
+//         }
+
+//         Console.Write($"{time} ");
 //     }
 
-//     // To find the closingPosition, use an overload of the IndexOf method to specify 
-//     // that the search for the matchingSymbol should start at the openingPosition in the string. 
-
-//     openingPosition += 1;
-//     closingPosition = message.IndexOf(matchingSymbol, openingPosition);
-
-//     // Finally, use the techniques you've already learned to display the sub-string:
-
-//     int length = closingPosition - openingPosition;
-//     Console.WriteLine(message.Substring(openingPosition, length));
+//     Console.WriteLine();
 // }
 
-// string data = "12345John Smith          5000  3  ";
-// string updatedData = data.Remove(5, 20);
-// Console.WriteLine(updatedData);
+// void AdjustTimes() 
+// {
+//     /* Adjust the times by adding the difference, keeping the value within 24 hours */
+//     for (int i = 0; i < times.Length; i++) 
+//     {
+//         times[i] = ((times[i] + diff)) % 2400;
+//     }
+// }
 
-// string message = "This--is--ex-amp-le--da-ta";
-// message = message.Replace("--", " ");
-// message = message.Replace("-", "");
-// Console.WriteLine(message);
+// string[] ipv4Input = {"107.31.1.5", "255.0.0.255", "555..0.555", "255...255"};
+// string[] address;
+// bool validLength = false;
+// bool validZeroes = false;
+// bool validRange = false;
 
-const string input = "<div><h2>Widgets &trade;</h2><span>5000</span></div>";
+// foreach (string ip in ipv4Input) 
+// {
+//     address = ip.Split(".", StringSplitOptions.RemoveEmptyEntries);
 
-string quantity = "";
-string output = "";
+//     ValidateLength(); 
+//     ValidateZeroes(); 
+//     ValidateRange();
 
-// Your work here
-const string openSpan = "<span>";
-const string closeSpan = "</span>";
+//     if (validLength && validZeroes && validRange) 
+//     {
+//         Console.WriteLine($"{ip} is a valid IPv4 address");
+//     } 
+//     else 
+//     {
+//         Console.WriteLine($"{ip} is an invalid IPv4 address");
+//     }
+// }
 
-int openingPosition = input.IndexOf(openSpan);
-openingPosition += openSpan.Length;
-int closingPosition = input.IndexOf(closeSpan);
-int length = closingPosition - openingPosition;
-quantity = input.Substring(openingPosition, length);
+// void ValidateLength() {
+//     validLength = address.Length == 4;
+// }
 
-Console.WriteLine(quantity);
+// void ValidateZeroes() {
+//     foreach (string number in address) 
+//     {
+//         if (number.Length > 1 && number.StartsWith("0")) 
+//         {
+//             validZeroes = false;
+//         }
+//     }
 
-// Replace input &trade with &reg
-string newInput = input.Replace("&trade;", "&reg;");
+//     validZeroes = true;
+// }
 
-const string openDiv = "<div>";
-const string closeDiv = "</div>";
+// void ValidateRange() {
+//     foreach (string number in address) 
+//     {
+//         int value = int.Parse(number);
+//         if (value < 0 || value > 255) 
+//         {
+//             validRange = false;
+//             return;
+//         }
+//     }
+//     validRange = true;
+// }
 
-openingPosition = newInput.IndexOf(openDiv);
-openingPosition += openDiv.Length;
-closingPosition = newInput.IndexOf(closeDiv);
-length = closingPosition - openingPosition;
+string[] text = {"You have much to", "Today is a day to", "Whatever work you do", "This is an ideal time to"};
+string[] good = {"look forward to.", "try new things!", "is likely to succeed.", "accomplish your dreams!"};
+string[] bad = {"fear.", "avoid major decisions.", "may have unexpected outcomes.", "re-evaluate your life."};
+string[] neutral = {"appreciate.", "enjoy time with friends.", "should align with your values.", "get in tune with nature."};
 
-output = newInput.Substring(openingPosition, length);
+Random random = new Random();
+int luck = random.Next(100);
+tellFortune();
 
-Console.WriteLine(output);
+luck = random.Next(100);
+tellFortune();
+
+
+void tellFortune() {
+    Console.WriteLine("A fortune teller whispers the following words:");
+    string[] fortune = (luck > 75 ? good : (luck < 25 ? bad : neutral));
+    for (int i = 0; i < 4; i++) 
+    {
+        Console.Write($"{text[i]} {fortune[i]} ");
+    }
+    Console.WriteLine("\n");
+}
+
