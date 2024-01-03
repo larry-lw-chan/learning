@@ -188,4 +188,76 @@ function getBook(id) {
 // console.log(true || "hello"); // hello
 // console.log(false || "hello"); // false
 
-// Optional Chaining
+// Optional Chaining (add ?)
+// function getTotalReviewCount(book) {
+//   const goodread = book.reviews.goodreads?.reviewsCount;
+//   const libraryThing = book.reviews.librarything?.reviewsCount ?? 0;
+//   return goodread + libraryThing;
+// }
+
+// console.log(getTotalReviewCount(getBook(3)));
+
+// Map
+// let books = getBooks();
+// let titles = books.map((book) => book.title);
+// // console.log(titles);
+
+// let essential_data = books.map((book) => ({
+//   title: book.title,
+//   author: book.author,
+// }));
+
+// console.log(essential_data);
+
+// Filter
+// let books = getBooks();
+// let longBooks = books
+//   .filter((book) => book.pages > 500)
+//   .filter((book) => book.hasMovieAdaptation);
+// // console.log(longBooks);
+
+// let adventureBooks = books
+//   .filter((book) => book.genres.includes("adventure"))
+//   .map((book) => book.title);
+// console.log(adventureBooks);
+
+// Reduce
+// let books = getBooks();
+// const pagesAllBooks = books.reduce((acc, book) => acc + book.pages, 0);
+// console.log(pagesAllBooks);
+
+// Sort
+// const arr = [3, 7, 1, 9, 6];
+// let sorted = arr.sort((a, b) => a - b);
+// console.log(sorted);
+
+// Immutable Array
+// 1) Add book object to array
+// const newBook = {
+//   id: 6,
+//   title: "The Lord of the Rings",
+//   author: "J. R. R. Tolkien",
+// };
+
+// const booksAfterAdd = [...getBooks(), newBook]; // add new book to array
+// // console.log(booksAfterAdd);
+// const booksAfterDelete = booksAfterAdd.filter((book) => book.id !== 3); // delete book from array
+// // console.log(booksAfterDelete);
+// const booksAfterUpdate = booksAfterAdd.map((book) =>
+//   book.id == 1 ? { ...book, pages: 1210 } : book
+// ); // update book in array
+// console.log(booksAfterUpdate);
+
+// Promise Syntax
+// fetch("https://jsonplaceholder.typicode.com/todos/")
+//   .then((response) => response.json())
+//   .then((json) => console.log(json));
+
+// Async/Await Syntax
+async function getTodos() {
+  const response = await fetch("https://jsonplaceholder.typicode.com/todos/");
+  const json = await response.json();
+  console.log(json);
+}
+
+getTodos();
