@@ -1,31 +1,25 @@
 package main
 
-import "fmt"
-
-type bot interface {	
-	getGreeting() string
-}
-
-type englishBot struct {}
-type spanishBot struct {}
+import (
+	"io"
+	"log"
+	"os"
+)
 
 func main() {
-	eb := englishBot{}
-	sb := spanishBot{}
-	printGreeting(eb)
-	printGreeting(sb)
-}
-
-func printGreeting(b bot) {
-	fmt.Println(b.getGreeting())
-}
-
-func (englishBot) getGreeting() string {
-	// VERY custom logic for generating an english greeting
-	return "Hi there!"
-}
-
-func (spanishBot) getGreeting() string {
-	// VERY custom logic for generating an spanish greeting
-	return "Hola!"
+	arg := os.Args[1]
+	
+	file, err := os.Open(arg) // For read access.
+	if err != nil {
+		log.Fatal(err)
+		os.Exit(1)
+	}
+	
+	// data := make([]byte, 100)
+	// count, err := file.Read(data)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// fmt.Printf("read %d bytes: %q\n", count, data[:count])
+	io.Copy(os.Stdout, file)
 }
