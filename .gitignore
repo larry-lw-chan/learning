@@ -136,6 +136,7 @@ dist
 python3.11
 bin
 pyvenv.cfg
+*.pyc
 
 # dotnet stuff
 *.dll
