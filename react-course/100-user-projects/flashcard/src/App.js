@@ -44,25 +44,32 @@ const questions = [
 ];
 
 function FlashCards() {
+  const [selected, setSelected] = React.useState(null);
   return (
     <div className="flashcards">
       {questions.map((question) => {
-        return <FlashCard questions={question} key={question.id} />;
+        return (
+          <FlashCard
+            questions={question}
+            key={question.id}
+            selected={selected}
+            setSelected={setSelected}
+          />
+        );
       })}
     </div>
   );
 }
 
 function FlashCard(props) {
-  const { question, answer } = props.questions;
-  const [message, setMessage] = React.useState(question);
+  const { id, question, answer } = props.questions;
+  const selected = props.selected;
+  const setSelected = props.setSelected;
+
+  const message = selected === id ? answer : question;
 
   function handleClick() {
-    if (message === question) {
-      setMessage(answer);
-    } else {
-      setMessage(question);
-    }
+    id === selected ? setSelected(null) : setSelected(id);
   }
 
   return (
