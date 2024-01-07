@@ -4,6 +4,7 @@ import "./App.css";
 const initialItems = [
   { id: 1, description: "Passport", quantity: 2, packed: false },
   { id: 2, description: "Socks", quantity: 12, packed: false },
+  { id: 3, description: "Charger", quantity: 1, packed: true },
 ];
 
 export default function App() {
@@ -22,10 +23,47 @@ function Logo() {
 }
 
 function Form() {
+  const [description, setDescription] = React.useState("");
+  const [quantity, setQuantity] = React.useState(1);
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (!description) return;
+
+    const newItem = {
+      id: Date.now(),
+      description,
+      quantity,
+      packed: false,
+    };
+
+    setDescription("");
+    setQuantity(1);
+  }
+
   return (
-    <div className="add-form">
+    <form className="add-form" onSubmit={handleSubmit}>
       <h3>What do you need for your 😍 trip?</h3>
-    </div>
+      <select
+        value={quantity}
+        onChange={(e) => {
+          setQuantity(Number(e.target.value));
+        }}
+      >
+        {Array.from({ length: 20 }, (_, i) => i + 1).map((quantity) => {
+          return <option key={quantity}>{quantity}</option>;
+        })}
+      </select>
+      <input
+        type="text"
+        placeholder="Item..."
+        value={description}
+        onChange={(e) => {
+          setDescription(e.target.value);
+        }}
+      />
+      <button type="submit">Add</button>
+    </form>
   );
 }
 
@@ -42,10 +80,10 @@ function PackingList() {
 }
 
 function Item(props) {
-  const { id, description, quantity, packed } = props.item;
+  const { description, quantity, packed } = props.item;
   return (
     <li>
-      <span className="description">
+      <span style={packed ? { textDecoration: "line-through" } : {}}>
         {quantity} {description}
       </span>
       <button>❌</button>
